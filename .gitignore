@@ -1,0 +1,80 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment and credentials
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+wallets/
+seeds/
+credentials/
+
+# Browser automation
+test-results/
+playwright-report/
+*.mp4
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Trash and backups
+trash/
+*.orig
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Extension files (large binaries)
+extensions/*.crx
+extensions/metamask-flask/
+
+# User-specific configurations
+config.local.json
+settings.local.json
+
+# Sensitive documentation
+PRIVACY.md
+SECRET*
+CREDENTIALS*

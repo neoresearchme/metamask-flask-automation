@@ -1,0 +1,40 @@
+{
+  "name": "metamask-flask-automation",
+  "version": "1.0.0",
+  "description": "Universal MetaMask Flask automation with Session Snap auto-approve",
+  "main": "scripts/universal-dapp-automation.js",
+  "scripts": {
+    "test": "node scripts/test-simple.js",
+    "test:full": "npx playwright test",
+    "launch": "./scripts/run-with-flask.sh",
+    "connect": "node scripts/universal-dapp-automation.js connect",
+    "swap": "node scripts/universal-dapp-automation.js swap",
+    "mint": "node scripts/universal-dapp-automation.js mint"
+  },
+  "keywords": [
+    "metamask",
+    "flask",
+    "web3",
+    "automation",
+    "dapp",
+    "uniswap",
+    "session-snap",
+    "auto-approve"
+  ],
+  "author": "Neo Kripto",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neo-kripto/metamask-flask-automation"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "ethers": "^6.9.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
