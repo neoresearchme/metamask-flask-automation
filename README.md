@@ -162,18 +162,25 @@ Session Snap enables automatic transaction signing without MetaMask popups:
 
 ## Configuration
 
-### Test Wallet
+### Wallet Configuration
 
-Default test wallet (for testing only):
+**IMPORTANT:** Configure your wallet in `.env` file (never commit to git!):
 
+```bash
+# Copy template
+cp .env.example .env
+
+# Edit with your wallet
+WALLET_MNEMONIC="your seed phrase"
+# OR
+WALLET_PRIVATE_KEY="0xYourPrivateKey"
 ```
-Address: 0x4B54E9621B14a5c069Ef7520676C53B70377d17B
-Seed: speed emerge manual base peace tragic margin vote service leader radio fortune
-Path: m/44'/60'/0'/0/0
-Network: Ethereum Mainnet + Testnets
-```
 
-**Warning:** This seed is stored in the repository for testing purposes only. Do not use for real funds.
+**Security:**
+- Use test wallet for development
+- Use hardware wallet for production
+- Never commit `.env` to git
+- See `docs/WALLET-MANAGEMENT.md` for complete guide
 
 ### Session Configuration
 

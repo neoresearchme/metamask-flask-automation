@@ -40,6 +40,7 @@ async function runTests() {
   console.log(`  ✅ Generated address: ${wallet.address}`);
   console.log(`  ✅ Valid address format: ${/^0x[a-fA-F0-9]{40}$/.test(wallet.address)}`);
   console.log(`  ✅ Private key length: ${wallet.privateKey.length}`);
+  console.log(`  ℹ️  This is a randomly generated test key (not from .env)`);
 
   // Test 4: Transaction signing
   console.log('\n📋 Test 4: Transaction signing');

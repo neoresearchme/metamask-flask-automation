@@ -12,7 +12,14 @@ const path = require('path');
 const fs = require('fs');
 
 const EXTENSION_PATH = path.join(__dirname, 'extensions/metamask-flask');
-const TEST_SEED = 'speed emerge manual base peace tragic margin vote service leader radio fortune';
+// Load environment variables
+require('dotenv').config();
+
+// Wallet configuration - load from environment or use defaults
+const TEST_SEED = process.env.WALLET_MNEMONIC || '';
+const TEST_PASSWORD = process.env.WALLET_PASSWORD || 'TestPassword123';
+const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY || '';
+const WALLET_FILE_PATH = process.env.WALLET_FILE_PATH || '';
 
 class UniversalDAppAutomation {
   constructor(options = {}) {
@@ -66,8 +73,24 @@ class UniversalDAppAutomation {
     }
   }
 
-  async importWallet(seed = TEST_SEED, password = 'TestPassword123') {
+  async importWallet(options = {}) {
     console.log('\n📥 Importing wallet...');
+    
+    // Determine wallet import method
+    const seed = options.seed || process.env.WALLET_MNEMONIC || TEST_SEED;
+    const privateKey = options.privateKey || process.env.WALLET_PRIVATE_KEY || WALLET_PRIVATE_KEY;
+    const walletFile = options.walletFile || process.env.WALLET_FILE_PATH || WALLET_FILE_PATH;
+    const password = options.password || process.env.WALLET_PASSWORD || TEST_PASSWORD;
+    
+    if (!seed && !privateKey && !walletFile) {
+      console.log('⚠️ No wallet configured. Please set one of:');
+      console.log('   - WALLET_MNEMONIC in .env');
+      console.log('   - WALLET_PRIVATE_KEY in .env');
+      console.log('   - WALLET_FILE_PATH in .env');
+      console.log('   - Or pass to importWallet() directly');
+      console.log('\n📖 See .env.example for configuration template');
+      return false;
+    }
     
     try {
       const extensionId = await this.getExtensionId();
@@ -96,13 +119,35 @@ class UniversalDAppAutomation {
         await popupPage.waitForTimeout(1000);
       }
       
-      // Enter seed phrase
-      const words = seed.split(' ');
-      for (let i = 0; i < Math.min(words.length, 12); i++) {
-        const input = await popupPage.$(`input[aria-label*="Phrase ${i + 1}"], input[placeholder*="${i + 1}"]`);
-        if (input) {
-          await input.fill(words[i]);
+      // Import method based on configuration
+      if (seed) {
+        console.log('Importing with mnemonic seed phrase...');
+        // Enter seed phrase
+        const words = seed.split(' ');
+        for (let i = 0; i < Math.min(words.length, 12); i++) {
+          const input = await popupPage.$(`input[aria-label*="Phrase ${i + 1}"], input[placeholder*="${i + 1}"]`);
+          if (input) {
+            await input.fill(words[i]);
+          }
         }
+      } else if (privateKey) {
+        console.log('Importing with private key...');
+        // Find and click "Import using private key" link/button
+        const importPK = await popupPage.$('text=private key, text=Private Key, text=import account');
+        if (importPK) {
+          await importPK.click();
+          await popupPage.waitForTimeout(500);
+        }
+        // Enter private key
+        const pkInput = await popupPage.$('input[type="password"], input[aria-label="Private Key"]');
+        if (pkInput) {
+          await pkInput.fill(privateKey);
+        }
+      } else if (walletFile) {
+        console.log('Importing from wallet file...');
+        console.log(`File: ${walletFile}`);
+        // Note: File import requires manual interaction in MetaMask UI
+        console.log('⚠️ File import requires manual completion in MetaMask');
       }
       
       // Enter password
@@ -120,8 +165,11 @@ class UniversalDAppAutomation {
       
       await popupPage.close();
       console.log('✅ Wallet imported');
+      return true;
     } catch (err) {
       console.log('⚠️ Wallet import may have failed or wallet already exists');
+      console.log('Error:', err.message);
+      return false;
     }
   }
 

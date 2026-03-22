@@ -52,7 +52,7 @@ brew install node git
 ## Step 2: Clone Repository
 
 ```bash
-git clone https://github.com/neo-kripto/metamask-flask-automation.git
+git clone https://github.com/neoresearchme/metamask-flask-automation.git
 cd metamask-flask-automation
 ```
 
@@ -95,16 +95,35 @@ unzip -o metamask-flask.crx -d metamask-flask
 cd ..
 ```
 
-## Step 7: Configure Test Wallet (Optional)
+## Step 7: Configure Wallet
 
-For testing purposes, you can use the default test wallet:
+**IMPORTANT:** Never use example wallets from documentation for real funds!
 
-```javascript
-// scripts/test-simple.js will use this automatically
-const TEST_SEED = 'speed emerge manual base peace tragic margin vote service leader radio fortune';
-```
+1. Copy environment template:
+   ```bash
+   cp .env.example .env
+   ```
 
-**Warning:** This is a public test wallet. Do not use for real funds.
+2. Edit `.env` with your wallet configuration:
+   ```bash
+   # Option 1: Seed phrase (testing)
+   WALLET_MNEMONIC="your twelve word seed phrase"
+   
+   # Option 2: Private key
+   WALLET_PRIVATE_KEY="0xYourPrivateKey"
+   
+   # Option 3: Wallet file
+   WALLET_FILE_PATH="/path/to/wallet.json"
+   
+   # Password
+   WALLET_PASSWORD="your-secure-password"
+   ```
+
+3. **Security:**
+   - `.env` is gitignored (never commit!)
+   - Use separate test wallet for development
+   - Use hardware wallet for production
+   - See `docs/WALLET-MANAGEMENT.md` for complete guide
 
 ## Step 8: Test Installation
 
@@ -138,22 +157,34 @@ npx playwright test tests/uniswap-test.spec.js
 Create a `.env` file for custom configuration:
 
 ```bash
-# .env
-TEST_SEED=your-test-seed-phrase
-TEST_PASSWORD=your-test-password
-DEFAULT_DAPP_URL=https://app.uniswap.org/
+# Wallet
+WALLET_MNEMONIC="your seed phrase"
+WALLET_PASSWORD="your password"
+
+# Network
+RPC_URL="https://mainnet.infura.io/v3/YOUR_KEY"
+CHAIN_ID=1
+
+# Session
+SESSION_EXPIRY_MS=86400000
+SESSION_MAX_VALUE_ETH=0.5
 ```
+
+See `.env.example` for all available options.
 
 ### Session Configuration
 
-Edit `scripts/universal-dapp-automation.js` to customize:
+Edit session settings in `.env`:
 
-```javascript
-const DEFAULT_SESSION_CONFIG = {
-  allowedContracts: ['0x...'],  // Your contract whitelist
-  maxValuePerTx: '0.5 ETH',     // Value limit
-  durationMs: 86400000,         // 24 hours
-};
+```bash
+# Session duration (24 hours)
+SESSION_EXPIRY_MS=86400000
+
+# Max value per transaction
+SESSION_MAX_VALUE_ETH=0.5
+
+# Contract whitelist
+SESSION_ALLOWED_CONTRACTS="0xUniswap,0xAave"
 ```
 
 ## Troubleshooting
@@ -195,21 +226,35 @@ ls extensions/metamask-flask/manifest.json
 chmod +x scripts/*.sh
 ```
 
+### Issue: No Wallet Configured
+
+```bash
+# Check .env file exists
+ls -la .env
+
+# Verify wallet configuration
+cat .env | grep WALLET_
+
+# See docs/WALLET-MANAGEMENT.md for wallet setup
+```
+
 ## Next Steps
 
 After successful installation:
 
-1. Read [SKILL.md](../SKILL.md) for usage documentation
-2. Run `./scripts/run-with-flask.sh` to launch browser
-3. Test with a dApp (e.g., Uniswap)
-4. Configure session for auto-approve
-5. Execute Web3 actions
+1. Read `SKILL.md` for usage documentation
+2. Read `docs/WALLET-MANAGEMENT.md` for wallet security
+3. Run `./scripts/run-with-flask.sh` to launch browser
+4. Test with a dApp (e.g., Uniswap)
+5. Configure session for auto-approve
+6. Execute Web3 actions
 
 ## Support
 
 For issues or questions:
-- Check [docs/COMPLETE-SETUP.md](COMPLETE-SETUP.md)
-- Review [docs/TEST-REPORT-FINAL.md](TEST-REPORT-FINAL.md)
+- Check `docs/WALLET-MANAGEMENT.md` for wallet issues
+- Check `docs/COMPLETE-SETUP.md` for setup help
+- Check `docs/TEST-REPORT-FINAL.md` for test results
 - Open an issue on GitHub
 
 ## Verification Checklist
@@ -220,6 +265,7 @@ For issues or questions:
 - [ ] Dependencies installed (`npm install`)
 - [ ] Playwright browsers installed
 - [ ] MetaMask Flask extension downloaded
+- [ ] Wallet configured in `.env`
 - [ ] Quick test passes (`node scripts/test-simple.js`)
 - [ ] Browser launches successfully
 
